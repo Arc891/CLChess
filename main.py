@@ -2,16 +2,21 @@ from abc import ABC, abstractmethod, abstractproperty
 from itertools import chain, product
 
 from Point import *
-from Piece import *
 from Color import *
-from Board import *
+from BoardAndPieces import *
+from Select import *
 
 
 def main():
     board = Board()
     board.print()
 
-    print("--- Done ---")
+    turn = 1
+    sideToMove = White
+
+    Select(board, sideToMove)
+
+    print("---- Done  ----")
     return
     
 main()
