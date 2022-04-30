@@ -1,21 +1,37 @@
-class Piece:
+from main import *
+from abc import ABC, abstractmethod, abstractproperty
+
+class Piece(ABC):
+    def __init__(self, pos: Point, color: Color):
+        self.pos   = pos
+        self.color = color
+
+    @abstractmethod
     def move(self):
         pass
 
-class Pawn(Piece):
-    pass
 
+
+class Pawn(Piece):
+    def move(self):
+        pass
+    
 class Bishop(Piece):
-    pass
+    def move(self):
+        pass
 
 class Knight(Piece):
-    pass
+    def move(self):
+        pass
 
 class Rook(Piece):
-    pass
+    def move(self):
+        pass
 
 class Queen(Piece):
-    pass
+    def move(self):
+        pass
 
 class King(Piece):
-    pass
+    def move(self):
+        pass
