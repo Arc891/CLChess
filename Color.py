@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod, abstractproperty
-from main import *
 
 class Color(ABC):
-    pass
+    @property
+    @abstractmethod
+    def code(self):
+        pass
 
 class White(Color):
-    pass
+    code = "\x1b[1;37m"
 
 class Black(Color):
-    pass
+    code = "\x1b[1;30m"
+
+class NoColor(Color):
+    code = "\x1b[33m"
