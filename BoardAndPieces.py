@@ -5,6 +5,8 @@ from Point import *
 from Color import *
 
 DEBUG = 1 
+COLOR_RESET = "\x1b[0m"
+EDGE_COLOR = "\x1b[7m"
 
 colToInt = {'a' : 1, 
             'b' : 2, 
@@ -52,17 +54,27 @@ class Board:
                     if DEBUG: print("king", self.board[x-1][y-1])
 
     def print(self):
-        print("\033c---- Board ----")
+        def print_letters():
+            print(EDGE_COLOR + "  ", end = "")
+            for x in colToInt:
+                print(x, end=" ")
+            print("  " + COLOR_RESET)
+        
+        print("\033c  ---- Board ----")
         print("- Player 2 (161660)")
-        row = 8
+        
+        # Top row / letters
+        print_letters()
+
         for y in range(7,-1,-1):
+            print(EDGE_COLOR + str(y+1), end=" " + COLOR_RESET) #Left side / numbers
+            
             for x in range(8):
-                print(self.board[x][y], end=" ")
-            print("\x1b[7m" + str(row) + " \x1b[0m")
-            row -= 1
-        for x in colToInt:
-            print("\x1b[7m" + x, end=" \x1b[0m")
-        print("\x1b[7m  \x1b[0m")
+                print(self.board[x][y], end=" ") #The pieces
+            
+            print(EDGE_COLOR + str(y+1) + " " + COLOR_RESET) #Right side / numbers
+
+        print_letters()
         print("- Player 1 (161660)")
 
 
@@ -74,7 +86,11 @@ class Piece(ABC):
         self.color = color
 
     def __str__(self):
-        return self.color.code + self.name + "\x1b[0m"
+        return self.color.code + self.name + COLOR_RESET
+
+    @abstractmethod
+    def get_possible_moves(self, board: Board):
+        pass
 
     @abstractmethod
     def select(self, board: Board):
@@ -86,11 +102,15 @@ class Piece(ABC):
 
     @property
     @abstractmethod
-    def name(self):
+    def name(self) -> str:
         pass
 
 
+
 class Pawn(Piece):
+    def get_possible_moves(self, board: Board):
+        pass
+
     def select(self, board: Board):
         # dir = 1 if self.color == White else -1
         self.name = self.color.selected + self.name
@@ -104,8 +124,12 @@ class Pawn(Piece):
 
 
 class Bishop(Piece):
-    def select(self, board: Board):
+    def get_possible_moves(self, board: Board):
         pass
+
+    def select(self, board: Board):
+        self.name = self.color.selected + self.name
+        return self
 
     def move(self, board: Board):
         pass
@@ -115,8 +139,27 @@ class Bishop(Piece):
 
 
 class Knight(Piece):
-    def select(self, board: Board):
+    def get_possible_moves(self, board: Board):
         pass
+
+    def select(self, board: Board):
+        possible_jumps =   [Point(1,2), Point(1,-2), 
+                            Point(2,1), Point(2,-1), 
+                            Point(-1,2), Point(-1,-2), 
+                            Point(-2,1), Point(-2,-1)]
+        
+        for x in possible_jumps:
+            newpos = self.pos + x
+            
+            if not newpos.isLegal():
+                continue
+
+            boardpos = board.board[newpos.x-1][newpos.y-1]
+            if boardpos.color != self.color:
+                boardpos.name = boardpos.color.selected + boardpos.name
+        
+        self.name = self.color.selected + self.name
+        return self
 
     def move(self, board: Board):
         pass
@@ -126,8 +169,12 @@ class Knight(Piece):
 
 
 class Rook(Piece):
-    def select(self, board: Board):
+    def get_possible_moves(self, board: Board):
         pass
+    
+    def select(self, board: Board):
+        self.name = self.color.selected + self.name
+        return self
 
     def move(self, board: Board):
         pass
@@ -137,8 +184,12 @@ class Rook(Piece):
 
 
 class Queen(Piece):
-    def select(self, board: Board):
+    def get_possible_moves(self, board: Board):
         pass
+
+    def select(self, board: Board):
+        self.name = self.color.selected + self.name
+        return self
     
     def move(self, board: Board):
         pass
@@ -148,8 +199,12 @@ class Queen(Piece):
 
 
 class King(Piece):
-    def select(self, board: Board):
+    def get_possible_moves(self, board: Board):
         pass
+
+    def select(self, board: Board):
+        self.name = self.color.selected + self.name
+        return self
 
     def move(self, board: Board):
         pass
@@ -159,6 +214,9 @@ class King(Piece):
 
 
 class Empty(Piece):
+    def get_possible_moves(self, board: Board):
+        pass
+
     def select(self, board: Board):
         pass
 

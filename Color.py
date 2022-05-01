@@ -3,12 +3,12 @@ from abc import ABC, abstractmethod, abstractproperty
 class Color(ABC):
     @property
     @abstractmethod
-    def code(self):
+    def code(self) -> str:
         pass
 
     @property
     @abstractmethod
-    def selected(self):
+    def selected(self) -> str:
         pass
 
 class White(Color):
@@ -21,4 +21,4 @@ class Black(Color):
 
 class NoColor(Color):
     code = "\x1b[33m"
-    selected = "\x1b[33;47m"
+    selected = "\x1b[33;42m"

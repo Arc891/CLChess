@@ -16,7 +16,7 @@ def main():
 
     Select(board, sideToMove)
 
-    print("---- Done  ----")
+    print("  ---- Done  ----")
     return
     
 main()
