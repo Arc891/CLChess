@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod, abstractproperty
 from itertools import chain, product
 
+from soupsieve import select
+
 from Point import *
 from Color import *
 from BoardAndPieces import *
+
+piece_names = ["p", "B", "N", "R", "Q", "K"]
 
 colToInt = {'a' : 1, 
             'b' : 2, 
@@ -17,19 +21,50 @@ colToInt = {'a' : 1,
 
 def Select(board: Board, sideToMove: Color):
     while True:
-        answer = input("Give the piece you want to move (f.e. Ne3):")
+        answer = input("Give the piece you want to select (f.e. Ng1): ")
         piece = answer[0]
-        pos = Point(colToInt[answer[1]], answer[2])
+        format_msg = "Enter: (p,B,N,R,Q,K)(a-g)(1-8), f.e. Qe3"
         
-        if piece is not board.board[pos.x-1][pos.y-1].name:
-            print("That piece does not exist there")
+        if piece not in piece_names:
+            print("That piece does not exist.", format_msg)
+            continue
+
+        try:
+            pos = Point(colToInt[answer[1]], answer[2])
+            assert(1 <= int(answer[2]) <= 8)
+        except KeyError:
+            print("That is not an existing column.", format_msg)
+            continue
+        except ValueError:
+            print("That was not a existing row.", format_msg)
+            continue
+
+        selected_piece = board.board[pos.x-1][pos.y-1]
+        
+        if piece is not selected_piece.name:
+            print("That piece does not exist there.")
             continue
         
-        board.board[pos.x-1][pos.y-1] = board.board[pos.x-1][pos.y-1].select(board)
+        selected_piece = selected_piece.select(board)
         board.print()
-        print("Selected: ", board.board[pos.x-1][pos.y-1], asSquare(pos))
+        print("Selected: ", selected_piece, asSquare(pos))
+        print()
+
+        return selected_piece
+    
+def Move(board: Board, sideToMove: Color):
+    while True:
+        answer = input("Give the location you want to move to (f.e. f3): ")
+        pos = Point(colToInt[answer[0]], answer[1])
+        selected_piece = board.board[pos.x-1][pos.y-1]
+        
+        if pos is not selected_piece.name:
+            print("That is not a possible move")
+            continue
+        
+        selected_piece = selected_piece.select(board)
+        board.print()
+        print("Selected: ", selected_piece, asSquare(pos))
         print()
 
         return board
-    
-
