@@ -19,6 +19,7 @@ colToInt = {'a' : 1,
             'h' : 8
 }
 
+
 def Select(board: Board, sideToMove: Color):
     while True:
         answer = input("Give the piece you want to select (f.e. Ng1): ")
@@ -52,13 +53,24 @@ def Select(board: Board, sideToMove: Color):
 
         return selected_piece
     
-def Move(board: Board, sideToMove: Color):
+def Move(board: Board, piece: Piece):
+    print("Possible moves:")
+    # sorted_moves = piece.possible_moves.sort(key=asSquare)
+    # print(sorted_moves)
+    moves_as_pos = []
+    for x in piece.possible_moves:                   #TODO: If no possible moves, stop and give message
+        print(x.pos, ":", asSquare(x.pos), end=" " ) #TODO: Add 'x' in front if taking piece
+        moves_as_pos.append(x.pos)
+    print()
+
     while True:
         answer = input("Give the location you want to move to (f.e. f3): ")
         pos = Point(colToInt[answer[0]], answer[1])
+        print(pos)
         selected_piece = board.board[pos.x-1][pos.y-1]
+        print(selected_piece)
         
-        if pos is not selected_piece.name:
+        if pos not in moves_as_pos:
             print("That is not a possible move")
             continue
         

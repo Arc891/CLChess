@@ -21,4 +21,4 @@ class Black(Color):
 
 class NoColor(Color):
     code = "\x1b[33m"
-    selected = "\x1b[33;42m"
+    selected = "\x1b[4;37;42m"

@@ -14,7 +14,8 @@ def main():
     turn = 1
     sideToMove = White
 
-    Select(board, sideToMove)
+    piece = Select(board, sideToMove)
+    Move(board, piece)
 
     print("  ---- Done  ----")
     return

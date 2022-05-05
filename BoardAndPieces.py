@@ -18,6 +18,8 @@ colToInt = {'a' : 1,
             'h' : 8
 }
 
+
+
 class Board:
     def __init__(self):
         self.board: list[list[Piece]] = [[Empty(Point(x,y), NoColor) for y in range(1,9)] for x in range(1,9)]
