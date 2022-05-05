@@ -14,8 +14,14 @@ def main():
     turn = 1
     sideToMove = White
 
-    piece = Select(board, sideToMove)
-    Move(board, piece)
+    while turn < 2:
+        piece = Select(board, sideToMove)
+        board = Move(board, piece)
+        if sideToMove == Black: turn += 1
+        if sideToMove == White: sideToMove = Black
+    
+    
+    # board.print()
 
     print("  ---- Done  ----")
     return
