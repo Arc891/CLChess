@@ -1,6 +1,3 @@
-from abc import ABC, abstractmethod, abstractproperty
-from itertools import chain, product
-
 from Point import *
 from Color import *
 from BoardAndPieces import *
@@ -8,20 +5,33 @@ from Select import *
 
 
 def main():
-    board = Board()
-    board.print()
-
     turn = 1
     sideToMove = White
 
-    while turn < 2:
+    board = Board()
+    board.print(turn, sideToMove)
+
+    while turn < 3:
         piece = Select(board, sideToMove)
+        board.print(turn, sideToMove)
+        print("Selected: ", piece, asSquare(piece.pos))
+        print()
+
         board = Move(board, piece)
-        if sideToMove == Black: turn += 1
-        if sideToMove == White: sideToMove = Black
+        board.print(turn, sideToMove)
+        print("Moved: ", piece, "to", asSquare(piece.pos))
+        print()
+        
+        
+        if sideToMove == Black: 
+            turn += 1
+            sideToMove = White
+
+        elif sideToMove == White: 
+            sideToMove = Black
     
     
-    # board.print()
+    # board.print(turn, sideToMove)
 
     print("  ---- Done  ----")
     return

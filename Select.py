@@ -1,7 +1,4 @@
-from abc import ABC, abstractmethod, abstractproperty
-from itertools import chain, product
-
-from soupsieve import select
+import random
 
 from Point import *
 from Color import *
@@ -19,12 +16,26 @@ colToInt = {'a' : 1,
             'h' : 8
 }
 
+def randomLocation() -> str:
+    result: str = ""
+    piecenum = random.randint(0,len(piece_names)-1)
+    piece = piece_names[piecenum] 
+    col = getKey(colToInt, random.randint(1, 8))
+    row = random.randint(1,8)
+    result += piece + col + str(row)
+    return result
 
-def Select(board: Board, sideToMove: Color):
+
+def Select(board: Board, sideToMove: Color) -> Piece:
     while True:
-        answer = input("Give the piece you want to select (f.e. Ng1): ")
+        format_msg = "Enter: (p,B,N,R,Q,K)(a-g)(1-8), f.e. " + randomLocation()
+
+        answer = input("Give the piece you want to select: ")
+        if len(answer) == 0:
+            print("Please enter a piece.", format_msg)
+            continue
+
         piece = answer[0]
-        format_msg = "Enter: (p,B,N,R,Q,K)(a-g)(1-8), f.e. Qe3"
         
         if piece not in piece_names:
             print("That piece does not exist.", format_msg)
@@ -40,7 +51,7 @@ def Select(board: Board, sideToMove: Color):
             print("That was not a existing row.", format_msg)
             continue
 
-        selected_piece = board.board[pos.x-1][pos.y-1]
+        selected_piece: Piece = board.board[pos.x-1][pos.y-1]
         
         if piece is not selected_piece.name:
             print("That piece does not exist there.")
@@ -50,9 +61,6 @@ def Select(board: Board, sideToMove: Color):
             continue
         
         selected_piece = selected_piece.select(board)
-        board.print()
-        print("Selected: ", selected_piece, asSquare(pos))
-        print()
 
         return selected_piece
     
@@ -60,9 +68,10 @@ def Move(board: Board, piece: Piece):
     print("Possible moves:")
     # sorted_moves = piece.possible_moves.sort(key=asSquare)
     # print(sorted_moves)
+    print(piece, piece.possible_moves)
     moves_as_pos = []
     for x in piece.possible_moves:       #TODO: If no possible moves, stop and give message
-        print(asSquare(x.pos), end=" " ) #TODO: Add 'x' in front if taking piece
+        print(asSquare(x.pos), end=" ")  #TODO: Add 'x' in front if taking piece
         moves_as_pos.append(x.pos)
     print()
 
@@ -78,8 +87,8 @@ def Move(board: Board, piece: Piece):
             continue
         
         selected_piece = piece.move(board, pos)
-        board.print()
-        print("Moved: ", selected_piece, "to", asSquare(pos))
-        print()
+        # board.print()
+        # print("Moved: ", selected_piece, "to", asSquare(pos))
+        # print()
 
         return board

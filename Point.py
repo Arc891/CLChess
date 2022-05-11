@@ -1,5 +1,3 @@
-from functools import partial
-
 colToInt = {'a' : 1, 
             'b' : 2, 
             'c' : 3, 
@@ -15,6 +13,8 @@ def getKey(dictionary: dict, value):     #functie voor het kijken welke key een 
     for x in items:
         if value == x[1]:
             return x[0]
+    
+    return "_"
 
 
 class Point:

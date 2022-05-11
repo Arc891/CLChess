@@ -1,5 +1,6 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from itertools import chain, product
+import time
 
 from Point import *
 from Color import *
@@ -55,7 +56,7 @@ class Board:
                     self.board[x-1][y-1] = King(pos, color)
                     if DEBUG: print("king", self.board[x-1][y-1])
 
-    def print(self):
+    def print(self, turn: int, sideToMove: Color):
         def print_letters():
             print(EDGE_COLOR + "  ", end = "")
             for x in colToInt:
@@ -78,6 +79,9 @@ class Board:
 
         print_letters()
         print("- Player 1 (161660)")
+        print("Turn:", turn)
+        print("Side to move:", end=" ")
+        print(sideToMove)
 
 
 
@@ -174,10 +178,10 @@ class Knight(Piece):
         
         for x in self.possible_moves:
             x.name = x.def_name
-            # self.possible_moves.remove(x)
 
+        self.possible_moves = []
         self.pos = newpos
-        self.name = "N"
+        self.name = self.def_name
         board.board[newpos.x-1][newpos.y-1] = self
         return self
     
