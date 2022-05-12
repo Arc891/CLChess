@@ -11,7 +11,7 @@ def main():
     board = Board()
     board.print(turn, sideToMove)
 
-    while turn < 3:
+    while turn < 4:
         piece = Select(board, sideToMove)
         board.print(turn, sideToMove)
         print("Selected: ", piece, asSquare(piece.pos))

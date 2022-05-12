@@ -68,23 +68,45 @@ def Select(board: Board, sideToMove: Color) -> Piece:
     
 def Move(board: Board, piece: Piece):
     print("Possible moves:")
-    # sorted_moves = piece.possible_moves.sort(key=asSquare)
-    # print(sorted_moves)
-    print(piece, piece.possible_moves)
-    moves_as_pos = []
-    for x in piece.possible_moves:       #TODO: If no possible moves, stop and give message
-        print(asSquare(x.pos), end=" ")  #TODO: Add 'x' in front if taking piece
-        moves_as_pos.append(x.pos)
+    sorted_moves = []
+    pieces_as_pos = []
+    for x in piece.possible_moves:       #TODO: If no possible moves, stop and give message that this piece cannot move
+        takes = ""
+        if x.color is not NoColor: takes = "x" #TODO: Add 'x' in front if taking piece
+        pieces_as_pos.append(x.pos)
+        sorted_moves.append(takes + asSquare(x.pos))
+    
+    sorted_moves = sorted(sorted_moves)
+
+    for x in sorted_moves:
+        print(x, end=" ")
+    
     print()
 
     while True:
         answer = input("Give the location you want to move to: ")
-        pos = Point(colToInt[answer[0]], answer[1])
+
+        if len(answer) == 0:
+            print("Please enter a position.")
+            continue
+        
+        if answer[0] == "x": answer = answer.replace("x", "")
+
+        try:
+            pos = Point(colToInt[answer[0]], answer[1])
+            assert(1 <= int(answer[1]) <= 8)
+        except KeyError:
+            print("That is not an existing column.")
+            continue
+        except ValueError:
+            print("That was not a existing row.")
+            continue
+
         print(pos)
         selected_piece: Piece = board.board[pos.x-1][pos.y-1]
         print(selected_piece)
         
-        if pos not in moves_as_pos:
+        if pos not in pieces_as_pos:
             print("That is not a possible move.")
             continue
         

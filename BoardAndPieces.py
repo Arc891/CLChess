@@ -91,7 +91,7 @@ class Piece(ABC):
     def __init__(self, pos: Point, color: Color):
         self.pos   = pos
         self.color = color
-        self.possible_moves = []
+        self.possible_moves: "list[Piece]" = []
 
     def __str__(self):
         return self.color.code + self.name + COLOR_RESET
