@@ -63,7 +63,8 @@ class Board:
                 print(x, end=" ")
             print("  " + COLOR_RESET)
         
-        print("\033c  ---- Board ----")
+        print("\033c") # Clears terminal
+        print("  ---- Board ----")
         print("- Player 2 (161660)")
         
         # Top row / letters
@@ -90,13 +91,14 @@ class Piece(ABC):
     def __init__(self, pos: Point, color: Color):
         self.pos   = pos
         self.color = color
+        self.possible_moves = []
 
     def __str__(self):
         return self.color.code + self.name + COLOR_RESET
 
 
     @abstractmethod
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         pass
 
 
@@ -116,15 +118,10 @@ class Piece(ABC):
         pass
     
 
-    @property
-    @abstractmethod
-    def possible_moves(self) -> "list[Piece]":
-        pass
-
 
 
 class Pawn(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         # dir = 1 if self.color == White else -1
         self.name = self.color.selected + self.name
         return self
@@ -134,12 +131,11 @@ class Pawn(Piece):
     
     def_name = "p"
     name = def_name
-    possible_moves = []
     
 
 
 class Bishop(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         self.name = self.color.selected + self.name
         return self
 
@@ -148,17 +144,18 @@ class Bishop(Piece):
 
     def_name = "B"
     name = def_name
-    possible_moves = []
 
 
 
 class Knight(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         possible_jumps =   [Point(1,2),  Point(1,-2), 
                             Point(2,1),  Point(2,-1), 
                             Point(-1,2), Point(-1,-2), 
                             Point(-2,1), Point(-2,-1)]
         
+        self.possible_moves = []
+
         for x in possible_jumps:
             newpos = self.pos + x
             
@@ -168,9 +165,10 @@ class Knight(Piece):
             cur_piece = board.board[newpos.x-1][newpos.y-1]
             if  cur_piece.color != self.color:
                 self.possible_moves.append(cur_piece)
-                cur_piece.name = cur_piece.color.selected + cur_piece.name
+
+                if not check: cur_piece.name = cur_piece.color.selected + cur_piece.name
         
-        self.name = self.color.selected + self.name
+        if not check: self.name = self.color.selected + self.name
         return self
 
     def move(self, board: Board, newpos: Point):
@@ -188,13 +186,12 @@ class Knight(Piece):
 
     def_name = "N"
     name = def_name
-    possible_moves = []
 
 
 
 
 class Rook(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         self.name = self.color.selected + self.name
         return self
 
@@ -203,12 +200,11 @@ class Rook(Piece):
 
     def_name = "R"
     name = def_name
-    possible_moves = []
 
 
 
 class Queen(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         self.name = self.color.selected + self.name
         return self
     
@@ -217,12 +213,11 @@ class Queen(Piece):
 
     def_name = "Q"
     name = def_name
-    possible_moves = []
 
 
 
 class King(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         self.name = self.color.selected + self.name
         return self
 
@@ -231,12 +226,11 @@ class King(Piece):
     
     def_name = "K"
     name = def_name
-    possible_moves = []
 
 
 
 class Empty(Piece):
-    def select(self, board: Board):
+    def select(self, board: Board, check: int=0):
         pass
 
     def move(self, board: Board, pos: Point):
@@ -244,4 +238,3 @@ class Empty(Piece):
 
     def_name = "."
     name = def_name
-    possible_moves = []

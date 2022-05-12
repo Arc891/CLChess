@@ -25,6 +25,8 @@ def randomLocation() -> str:
     result += piece + col + str(row)
     return result
 
+# def updateMoves():
+
 
 def Select(board: Board, sideToMove: Color) -> Piece:
     while True:
@@ -76,14 +78,14 @@ def Move(board: Board, piece: Piece):
     print()
 
     while True:
-        answer = input("Give the location you want to move to (f.e. f3): ")
+        answer = input("Give the location you want to move to: ")
         pos = Point(colToInt[answer[0]], answer[1])
         print(pos)
         selected_piece: Piece = board.board[pos.x-1][pos.y-1]
         print(selected_piece)
         
         if pos not in moves_as_pos:
-            print("That is not a possible move")
+            print("That is not a possible move.")
             continue
         
         selected_piece = piece.move(board, pos)
