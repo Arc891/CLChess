@@ -81,8 +81,7 @@ class Board:
         print_letters()
         print("- Player 1 (161660)")
         print("Turn:", turn)
-        print("Side to move:", end=" ")
-        print(sideToMove)
+        print("Side to move:", sideToMove.name)
 
 
 
@@ -123,11 +122,21 @@ class Piece(ABC):
 class Pawn(Piece):
     def select(self, board: Board, check: int=0):
         # dir = 1 if self.color == White else -1
+        self.possible_moves.append(board.board[self.pos.x-1][self.pos.y])
         self.name = self.color.selected + self.name
         return self
         
-    def move(self, board: Board, pos: Point):
-        pass
+    def move(self, board: Board, newpos: Point):
+        board.board[self.pos.x-1][self.pos.y-1] = Empty(self.pos, NoColor)
+        
+        for x in self.possible_moves:
+            x.name = x.def_name
+
+        self.possible_moves = []
+        self.pos = newpos
+        self.name = self.def_name
+        board.board[newpos.x-1][newpos.y-1] = self
+        return self
     
     def_name = "p"
     name = def_name
@@ -136,11 +145,45 @@ class Pawn(Piece):
 
 class Bishop(Piece):
     def select(self, board: Board, check: int=0):
-        self.name = self.color.selected + self.name
+        possible_jumps = [Point(1,1),  Point(1,-1), 
+                          Point(-1,1), Point(-1,-1)]
+
+        self.possible_moves = []
+
+        for x in possible_jumps:
+            i = 1
+            while i < 8:
+                newpos = self.pos + x * i
+                
+                if not newpos.isLegal():
+                    i += 1
+                    continue
+
+                cur_piece = board.board[newpos.x-1][newpos.y-1]
+                if  cur_piece.color != self.color:
+                    self.possible_moves.append(cur_piece)
+
+                    if not check: cur_piece.name = cur_piece.color.selected + cur_piece.name
+                
+                    if cur_piece.color != NoColor: i = 8
+                
+                else:
+                    i = 8
+        
+        if not check: self.name = self.color.selected + self.name
         return self
 
-    def move(self, board: Board, pos: Point):
-        pass
+    def move(self, board: Board, newpos: Point):
+        board.board[self.pos.x-1][self.pos.y-1] = Empty(self.pos, NoColor)
+        
+        for x in self.possible_moves:
+            x.name = x.def_name
+
+        self.possible_moves = []
+        self.pos = newpos
+        self.name = self.def_name
+        board.board[newpos.x-1][newpos.y-1] = self
+        return self
 
     def_name = "B"
     name = def_name
@@ -149,10 +192,10 @@ class Bishop(Piece):
 
 class Knight(Piece):
     def select(self, board: Board, check: int=0):
-        possible_jumps =   [Point(1,2),  Point(1,-2), 
-                            Point(2,1),  Point(2,-1), 
-                            Point(-1,2), Point(-1,-2), 
-                            Point(-2,1), Point(-2,-1)]
+        possible_jumps = [Point(1,2),  Point(1,-2), 
+                          Point(2,1),  Point(2,-1), 
+                          Point(-1,2), Point(-1,-2), 
+                          Point(-2,1), Point(-2,-1)]
         
         self.possible_moves = []
 

@@ -1,4 +1,5 @@
 import random
+from xmlrpc.client import Boolean
 
 from Point import *
 from Color import *
@@ -33,8 +34,12 @@ def Select(board: Board, sideToMove: Color) -> Piece:
         format_msg = "Enter: (p,B,N,R,Q,K)(a-g)(1-8), f.e. " + randomLocation()
 
         answer = input("Give the piece you want to select: ")
-        if len(answer) == 0:
-            print("Please enter a piece.", format_msg)
+
+        if answer == "qq":
+            exit(0)
+
+        if len(answer) < 3:
+            print("Please enter a piece and location.", format_msg)
             continue
 
         piece = answer[0]
@@ -66,10 +71,15 @@ def Select(board: Board, sideToMove: Color) -> Piece:
 
         return selected_piece
     
-def Move(board: Board, piece: Piece):
+def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
     print("Possible moves:")
     sorted_moves = []
     pieces_as_pos = []
+
+    if len(piece.possible_moves) == 0:
+        piece = piece.move(board, piece.pos)
+        return (board, False)
+
     for x in piece.possible_moves:       #TODO: If no possible moves, stop and give message that this piece cannot move
         takes = ""
         if x.color is not NoColor: takes = "x" #TODO: Add 'x' in front if taking piece
@@ -86,7 +96,10 @@ def Move(board: Board, piece: Piece):
     while True:
         answer = input("Give the location you want to move to: ")
 
-        if len(answer) == 0:
+        if answer == "qq":
+            exit(0)
+
+        if len(answer) < 2:
             print("Please enter a position.")
             continue
         
@@ -115,4 +128,4 @@ def Move(board: Board, piece: Piece):
         # print("Moved: ", selected_piece, "to", asSquare(pos))
         # print()
 
-        return board
+        return (board, True)

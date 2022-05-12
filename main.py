@@ -17,11 +17,14 @@ def main():
         print("Selected: ", piece, asSquare(piece.pos))
         print()
 
-        board = Move(board, piece)
-        board.print(turn, sideToMove)
-        print("Moved: ", piece, "to", asSquare(piece.pos))
-        print()
-        
+        outcome = Move(board, piece)
+        board = outcome[0]
+
+        if not outcome[1]:
+            board.print(turn, sideToMove)
+            print("This piece has no possible moves, select another piece.")
+            print()
+            continue
         
         if sideToMove == Black: 
             turn += 1
@@ -30,6 +33,9 @@ def main():
         elif sideToMove == White: 
             sideToMove = Black
     
+        board.print(turn, sideToMove)
+        print("Moved: ", piece, "to", asSquare(piece.pos))
+        print()
     
     # board.print(turn, sideToMove)
 

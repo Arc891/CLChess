@@ -35,6 +35,9 @@ class Point:
     def __eq__(self, other):
         return (self.x == other.x) and (self.y == other.y)
 
+    def __mul__(self, z: int):
+        return Point(self.x * z, self.y * z)
+
     def __str__(self):
         return "({0}, {1})".format(self.x, self.y)
 
