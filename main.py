@@ -7,11 +7,12 @@ from Select import *
 def main():
     turn = 1
     sideToMove = White
+    gameOver = False
 
     board = Board()
     board.print(turn, sideToMove)
 
-    while turn < 4:
+    while not gameOver:
         piece = Select(board, sideToMove)
         board.print(turn, sideToMove)
         print("Selected: ", piece, asSquare(piece.pos))
@@ -19,12 +20,7 @@ def main():
 
         outcome = Move(board, piece)
         board = outcome[0]
-
-        if not outcome[1]:
-            board.print(turn, sideToMove)
-            print("This piece has no possible moves, select another piece.")
-            print()
-            continue
+        gameOver = outcome[1]
         
         if sideToMove == Black: 
             turn += 1

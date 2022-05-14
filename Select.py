@@ -69,6 +69,10 @@ def Select(board: Board, sideToMove: Color) -> Piece:
         
         selected_piece = selected_piece.select(board)
 
+        if len(selected_piece.possible_moves) == 0:
+            print("This piece has no possible moves, choose another")
+            continue
+
         return selected_piece
     
 def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
@@ -80,9 +84,9 @@ def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
         piece = piece.move(board, piece.pos)
         return (board, False)
 
-    for x in piece.possible_moves:       #TODO: If no possible moves, stop and give message that this piece cannot move
+    for x in piece.possible_moves:
         takes = ""
-        if x.color is not NoColor: takes = "x" #TODO: Add 'x' in front if taking piece
+        if x.color is not NoColor: takes = "x" 
         pieces_as_pos.append(x.pos)
         sorted_moves.append(takes + asSquare(x.pos))
     
@@ -128,4 +132,4 @@ def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
         # print("Moved: ", selected_piece, "to", asSquare(pos))
         # print()
 
-        return (board, True)
+        return (board, False)
