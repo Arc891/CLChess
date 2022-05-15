@@ -56,7 +56,7 @@ class Board:
                     self.board[x-1][y-1] = King(pos, color)
                     if DEBUG: print("king", self.board[x-1][y-1])
 
-    def print(self, turn: int, sideToMove: Color):
+    def print(self, turn: int, sideToMove: Color, moves: list[str]):
         def print_letters():
             print(EDGE_COLOR + "  ", end = "")
             for x in colToInt:
@@ -81,6 +81,10 @@ class Board:
         print_letters()
         print("- Player 1 (161660)")
         print("Turn:", turn)
+        print("Moves:", end=" ")
+        for move in moves:
+            print(move, end=" ")
+        print()
         print("Side to move:", sideToMove.name)
 
 
@@ -363,7 +367,26 @@ class Queen(Piece):
 
 class King(Piece):
     def select(self, board: Board, check: int=0):
-        self.name = self.color.selected + self.name
+        possible_jumps = [Point(1,0),  Point(-1,0), 
+                          Point(0,1),  Point(0,-1),
+                          Point(1,1),  Point(1,-1), 
+                          Point(-1,1), Point(-1,-1)]
+        
+        self.possible_moves = []
+
+        for x in possible_jumps:
+            newpos = self.pos + x
+            
+            if not newpos.isLegal():
+                continue
+
+            cur_piece = board.board[newpos.x-1][newpos.y-1]
+            if  cur_piece.color != self.color:
+                self.possible_moves.append(cur_piece)
+
+                if not check: cur_piece.name = cur_piece.color.selected + cur_piece.name
+        
+        if not check: self.name = self.color.selected + self.name
         return self
 
     def move(self, board: Board, newpos: Point):

@@ -1,5 +1,4 @@
 import random
-from xmlrpc.client import Boolean
 
 from Point import *
 from Color import *
@@ -70,19 +69,17 @@ def Select(board: Board, sideToMove: Color) -> Piece:
         selected_piece = selected_piece.select(board)
 
         if len(selected_piece.possible_moves) == 0:
+            selected_piece = selected_piece.move(board, selected_piece.pos)
             print("This piece has no possible moves, choose another")
+            print()
             continue
 
         return selected_piece
     
-def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
+def Move(board: Board, piece: Piece) -> tuple[Board, Piece]:
     print("Possible moves:")
     sorted_moves = []
     pieces_as_pos = []
-
-    if len(piece.possible_moves) == 0:
-        piece = piece.move(board, piece.pos)
-        return (board, False)
 
     for x in piece.possible_moves:
         takes = ""
@@ -107,7 +104,7 @@ def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
             print("Please enter a position.")
             continue
         
-        if answer[0] == "x": answer = answer.replace("x", "")
+        answer = answer.replace("x", "")
 
         try:
             pos = Point(colToInt[answer[0]], answer[1])
@@ -128,8 +125,5 @@ def Move(board: Board, piece: Piece) -> tuple[Board, Boolean]:
             continue
         
         selected_piece = piece.move(board, pos)
-        # board.print()
-        # print("Moved: ", selected_piece, "to", asSquare(pos))
-        # print()
 
-        return (board, False)
+        return (board, selected_piece)
