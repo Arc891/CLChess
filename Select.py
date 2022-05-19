@@ -16,8 +16,8 @@ colToInt = {'a' : 1,
             'h' : 8
 }
 
-def randomLocation() -> str:
-    result: str = ""
+def randomLocation():
+    result = ""
     piecenum = random.randint(0,len(piece_names)-1)
     piece = piece_names[piecenum] 
     col = getKey(colToInt, random.randint(1, 8))
@@ -37,7 +37,9 @@ def Select(board: Board, sideToMove: Color) -> Piece:
         if answer == "qq":
             exit(0)
 
-        if len(answer) < 3:
+        if len(answer) == 2:
+            answer = "p" + answer
+        elif len(answer) < 2:
             print("Please enter a piece and location.", format_msg)
             continue
 

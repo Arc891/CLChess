@@ -370,7 +370,8 @@ class King(Piece):
         possible_jumps = [Point(1,0),  Point(-1,0), 
                           Point(0,1),  Point(0,-1),
                           Point(1,1),  Point(1,-1), 
-                          Point(-1,1), Point(-1,-1)]
+                          Point(-1,1), Point(-1,-1),
+                          Point(2,0),  Point(-2,0)]
         
         self.possible_moves = []
 
@@ -379,6 +380,21 @@ class King(Piece):
             
             if not newpos.isLegal():
                 continue
+
+            if (x == Point(2,0) or x == Point(-2,0)) and self.moved:
+                continue
+
+            elif x == Point(2,0) and not self.moved:
+                if board.board[self.pos.x][self.pos.y-1] not in self.possible_moves:
+                    continue    #check if no piece in between castle direction
+                elif not (board.board[self.pos.x+2][self.pos.y-1].def_name == "R" and (not board.board[self.pos.x+2][self.pos.y-1].moved) and board.board[self.pos.x+2][self.pos.y-1].color == self.color): 
+                    continue    #check if rook is in corner and not moved, if it is either not there or has moved, do not add castle to that direction
+
+            elif x == Point(-2,0) and not self.moved:
+                if board.board[self.pos.x-2][self.pos.y-1] not in self.possible_moves:
+                    continue
+                elif not (board.board[self.pos.x-5][self.pos.y-1].def_name == "R" and (not board.board[self.pos.x-5][self.pos.y-1].moved) and board.board[self.pos.x-5][self.pos.y-1].color == self.color): 
+                    continue
 
             cur_piece = board.board[newpos.x-1][newpos.y-1]
             if  cur_piece.color != self.color:
@@ -394,6 +410,17 @@ class King(Piece):
         
         for x in self.possible_moves:
             x.name = x.def_name
+
+        difference = Point(newpos.x - self.pos.x, newpos.y - self.pos.y)
+
+        if difference == Point(2,0):
+            print("Found castling 2,0...")
+            castle_rook = board.board[self.pos.x+2][self.pos.y-1]
+            castle_rook.move(board, Point(newpos.x-1, newpos.y))
+            time.sleep(2)
+        elif difference == Point(-2,0):
+            castle_rook = board.board[self.pos.x-5][self.pos.y-1]
+            castle_rook.move(board, Point(newpos.x+1, newpos.y))
 
         self.possible_moves = []
         self.moved = True
